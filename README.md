@@ -9,9 +9,7 @@ This project implements a secure, containerized authentication microservice usin
 - Cron job for periodic 2FA code logging
 - Persistent storage volumes
 
-=====================================================
-1. PROJECT OVERVIEW
-=====================================================
+1. PROJECT OVERVIEW:
 
 This microservice provides:
 1. /decrypt-seed      – Decrypt base64 encrypted seed using RSA private key
@@ -22,9 +20,7 @@ Seed, once decrypted, is stored persistently in /data/seed.txt so it survives
 container restarts. Every minute, a cron job logs latest TOTP code into
 /cron/last_code.txt in UTC time.
 
-=====================================================
-2. TECHNOLOGIES USED
-=====================================================
+2. TECHNOLOGIES USED:
 
 - Python / FastAPI (or equivalent framework)
 - RSA Cryptography (4096-bit, OAEP-SHA256, PSS-SHA256)
@@ -34,9 +30,7 @@ container restarts. Every minute, a cron job logs latest TOTP code into
 - Linux file system permissions
 - Persisted volumes (/data, /cron)
 
-=====================================================
-3. DIRECTORY STRUCTURE
-=====================================================
+3. DIRECTORY STRUCTURE:
 
 project/
 ├── app/
@@ -62,24 +56,20 @@ project/
 ├── .gitignore
 └── README.txt
 
-=====================================================
-4. API ENDPOINTS
-=====================================================
+4. API ENDPOINTS:
 
-1. POST /decrypt-seed
+  1. POST /decrypt-seed
    Body: { "encrypted_seed": "BASE64..." }
    Action: Decrypts seed using RSA-OAEP-SHA256 & stores /data/seed.txt
 
-2. GET /generate-2fa
+  2. GET /generate-2fa
    Action: Generates 6-digit TOTP + returns seconds remaining (0–29)
 
-3. POST /verify-2fa
+  3. POST /verify-2fa
    Body: { "code": "123456" }
    Action: Verifies TOTP code with ±30s window tolerance
 
-=====================================================
-5. DOCKER FEATURES
-=====================================================
+5. DOCKER FEATURES:
 
 - Multi-stage Dockerfile reduces image size
 - Cron installed + works with LF line endings
@@ -89,9 +79,7 @@ project/
     /cron → cron logs last 2FA code
 - Application + cron daemon start together
 
-=====================================================
-6. CRON JOB
-=====================================================
+6. CRON JOB:
 
 Runs every minute and:
 1. Reads /data/seed.txt
@@ -102,9 +90,8 @@ Runs every minute and:
 Ensure .gitattributes contains:
 cron/2fa-cron text eol=lf
 
-=====================================================
-7. HOW TO RUN LOCALLY
-=====================================================
+
+7. HOW TO RUN LOCALLY:
 
 # Build
 docker-compose build
@@ -115,23 +102,19 @@ docker-compose up -d
 # Test:
 curl -X POST http://localhost:8080/decrypt-seed …
 
-=====================================================
-8. IMPORTANT NOTES
-=====================================================
+8. IMPORTANT NOTES:
 
 - student_private.pem MUST be committed (task requirement).
 - encrypted_seed.txt MUST NOT be committed.
 - All cryptographic parameters MUST strictly match specifications.
 - Repository URL must be identical for seed request & submission.
 
-=====================================================
-9. OUTPUT FILES SAVED IN VOLUMES
-=====================================================
+9. OUTPUT FILES SAVED IN VOLUMES:
 
 /data/seed.txt         – decrypted 64-char hex seed  
 /cron/last_code.txt    – cron logs of 2FA codes  
 
-=====================================================
+
 END OF README
-=====================================================
+
 
